@@ -24,11 +24,11 @@ class Robot:
         content = r['text']
         if 'list' in r.keys():
             content += '\n'
-        for item in r['list']:
-            content += '\n'
-            for key in item:
-                if key != 'icon':
-                    content += item[key].strip('?ref=tuling')+ '\n'
+            for item in r['list']:
+                content += '\n'
+                for key in item:
+                    if key != 'icon':
+                        content += item[key].strip('?ref=tuling')+ '\n'
         if 'url' in r.keys():
             content += '\n'
             content += r['url'] + '\n'
