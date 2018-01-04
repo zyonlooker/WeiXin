@@ -1,3 +1,5 @@
+#coding=utf-8
+
 import time, datetime, requests, itchat
 from utils import *
 from BasicInfo import WeixinInfo
@@ -22,19 +24,24 @@ def text_reply(msg):
                 sender_remarkname = sender['RemarkName']
                 break
     if sender_name != wx.myself['UserName']:
-        translated_text = text_translation(text)
-        msg_reply = ''
-        msg_reply += 'YAO is not here.\nNLP is under Construction...\n'
-        msg_reply += 'Did you mean:\n'
-        msg_reply += '----------------------\n'
-        msg_reply += translated_text
-        msg_reply += '\n----------------------\n'
+        source_language, target_language, translated_text = text_translation(text)
+        if source_language == 'zh':
+            msg_reply = 'YAO之助:\n'
+            msg_reply += rob_reply(text)
+        else:
+            msg_reply = ''
+            msg_reply += 'YAO is not here.\nNLP is under Construction...\n'
+            msg_reply += 'Did you mean:\n'
+            msg_reply += '----------------------\n'
+            msg_reply += translated_text
+            msg_reply += '\n----------------------\n'
         if sender_remarkname != '':
             print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
         else:
             print('Message from %s:\n%s' % (sender_nickname, text))
         print('')
         print('Replied:\n%s' % msg_reply)
+        print('')
         return msg_reply
     else:
         return
@@ -42,14 +49,20 @@ def text_reply(msg):
 @itchat.msg_register(TEXT, isGroupChat = True)
 def text_reply(msg):
     if msg['isAt']:
-        msg_reply = ''
-        msg_reply += 'YAO is not here. Debugging...\n'
-        msg_reply += 'Did you mean:\n'
-        msg_reply += '----------------------\n'
-        msg_reply += translated_text
-        msg_reply += '\n----------------------\n'
-        itchat.send(msg_reply)
-
+        text = msg['Content']
+        source_language, target_language, translated_text = text_translation(text)
+        if source_language == 'zh':
+            msg_reply = 'YAO之助:\n'
+            msg_reply += rob_reply(text)
+            itchat.send(msg_reply)
+        else:
+            msg_reply = ''
+            msg_reply += 'YAO is not here.\nNLP is under Construction...\n'
+            msg_reply += 'Did you mean:\n'
+            msg_reply += '----------------------\n'
+            msg_reply += translated_text
+            msg_reply += '\n----------------------\n'
+            itchat.send(msg_reply)
 
 def main():
     global wx
@@ -59,9 +72,9 @@ def main():
     wx = WeixinInfo()
 #    official_account = wx.search_OfficialAccount(u'方脑壳被驴踢')
 
-
     # Listening
     itchat.run()
+
 
 if __name__ == '__main__':
     main()

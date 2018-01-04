@@ -6,7 +6,9 @@ class WeixinInfo():
     def __init__(self):
         # Fetch Myself's Information
         myself = itchat.search_friends()
+        friends = itchat.get_friends(update = True)
         self.myself = myself
+        self.friends = friends
         print('Login Information:')
         print('-------------------')
         print('UserName:    %s' % self.myself['UserName'])
