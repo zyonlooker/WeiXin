@@ -44,16 +44,6 @@ def text_translation(text):
 # Tuling Robot Reply
 def rob_reply(text):
     rob = TulingRob.Robot()
-    replied_text = rob.get_message(text)
-    return replied_text
+    replied_code, replied_text = rob.get_message(text)
+    return replied_code, replied_text
 
-# Reply Messages
-def reply_message(text):
-    translate = BaiduTranslate.BaiduTranslator()
-    result = translate.translate(text)
-    if result['from'] == result['en']:
-        result = translate.translate(text, toLang='zh')
-        replied_text = result['trans_result'][0]['dst']
-    else:
-        replied_text = rob_reply
-    return replied_text

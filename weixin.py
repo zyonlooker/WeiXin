@@ -10,7 +10,10 @@ from BasicInfo import WeixinInfo
 def text_reply(msg):
     text = msg['Content']
     sender_name = msg['FromUserName']
+
     friends = wx.get_friends()
+    sender_nickname = None
+    sender_remarkname = None
     for sender in friends:
         if sender['UserName'] == sender_name:
             sender_nickname = sender['NickName']
@@ -23,38 +26,55 @@ def text_reply(msg):
                 sender_nickname = sender['NickName']
                 sender_remarkname = sender['RemarkName']
                 break
-    if sender_name != wx.myself['UserName']:
-        source_language, target_language, translated_text = text_translation(text)
-        if source_language == 'zh':
-            msg_reply = 'YAO之助:\n'
-            msg_reply += rob_reply(text)
-        else:
-            msg_reply = ''
-            msg_reply += 'YAO is not here.\nNLP is under Construction...\n'
-            msg_reply += 'Did you mean:\n'
-            msg_reply += '----------------------\n'
-            msg_reply += translated_text
-            msg_reply += '\n----------------------\n'
+            
+    # ACL. Senders in the list will not be replied.
+    acl = open('acl.cfg', 'r').read()
+    if sender_nickname in acl:
         if sender_remarkname != '':
             print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
         else:
             print('Message from %s:\n%s' % (sender_nickname, text))
         print('')
-        print('Replied:\n%s' % msg_reply)
+        print('Replied: No Reply')
         print('')
-        return msg_reply
+        return 
+
+    source_language, target_language, translated_text = text_translation(text)
+    code_rob_replied, text_rob_replied = rob_reply(text)
+    if source_language == 'zh' and text_rob_replied != '':
+        if str(code_rob_replied) != '40004':
+            msg_reply = u'YAO之助:\n'
+            msg_reply += text_rob_replied
+        else:
+            msg_reply = u'YAO之助:\n我累了，等YAO回来自己说......'
     else:
-        return
+        msg_reply = ''
+        msg_reply += 'YAO is not here.\nNLP is under Construction...\n'
+        msg_reply += 'Did you mean:\n'
+        msg_reply += '----------------------\n'
+        msg_reply += translated_text
+        msg_reply += '\n----------------------\n'
+    if sender_remarkname != '':
+        print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
+    else:
+        print('Message from %s:\n%s' % (sender_nickname, text))
+    print('')
+    print('Replied:\n%s' % msg_reply)
+    print('')
+    return msg_reply
 
 @itchat.msg_register(TEXT, isGroupChat = True)
 def text_reply(msg):
     if msg['isAt']:
         text = msg['Content']
         source_language, target_language, translated_text = text_translation(text)
-        if source_language == 'zh':
-            msg_reply = 'YAO之助:\n'
-            msg_reply += rob_reply(text)
-            itchat.send(msg_reply)
+        code_rob_replied, text_rob_replied = rob_reply(text)
+        if source_language == 'zh' and text_rob_replied != '':
+            if str(code_rob_replied) != '40004':
+                msg_reply = u'YAO之助:\n'
+                msg_reply += text_rob_replied
+            else:
+                msg_reply = u'YAO之助:\n我累了，等YAO回来自己说......'
         else:
             msg_reply = ''
             msg_reply += 'YAO is not here.\nNLP is under Construction...\n'
