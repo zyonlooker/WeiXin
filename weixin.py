@@ -28,7 +28,7 @@ def text_reply(msg):
                 break
             
     # ACL. Senders in the list will not be replied.
-    acl = open('acl.cfg', 'r').read()
+    acl = open('acl.cfg', 'r').read().split('\n')
     if sender_nickname in acl:
         if sender_remarkname != '':
             print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
@@ -38,30 +38,32 @@ def text_reply(msg):
         print('Replied: No Reply')
         print('')
         return 
-
-    source_language, target_language, translated_text = text_translation(text)
-    code_rob_replied, text_rob_replied = rob_reply(text)
-    if source_language == 'zh' and text_rob_replied != '':
-        if str(code_rob_replied) != '40004':
-            msg_reply = u'YAO之助:\n'
-            msg_reply += text_rob_replied
+    if sender_name != wx.myself['UserName']:
+        source_language, target_language, translated_text = text_translation(text)
+        code_rob_replied, text_rob_replied = rob_reply(text)
+        if source_language == 'zh' and text_rob_replied != '':
+            if str(code_rob_replied) != '40004':
+                msg_reply = u'YAO之助:\n'
+                msg_reply += text_rob_replied
+            else:
+                msg_reply = u'YAO之助:\n我累了，等YAO回来自己说......'
         else:
-            msg_reply = u'YAO之助:\n我累了，等YAO回来自己说......'
+            msg_reply = ''
+            msg_reply += 'YAO is not here.\nNLP is under Construction...\n'
+            msg_reply += 'Did you mean:\n'
+            msg_reply += '----------------------\n'
+            msg_reply += translated_text
+            msg_reply += '\n----------------------\n'
+        if sender_remarkname != '':
+            print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
+        else:
+            print('Message from %s:\n%s' % (sender_nickname, text))
+        print('')
+        print('Replied:\n%s' % msg_reply)
+        print('')
+        return msg_reply
     else:
-        msg_reply = ''
-        msg_reply += 'YAO is not here.\nNLP is under Construction...\n'
-        msg_reply += 'Did you mean:\n'
-        msg_reply += '----------------------\n'
-        msg_reply += translated_text
-        msg_reply += '\n----------------------\n'
-    if sender_remarkname != '':
-        print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
-    else:
-        print('Message from %s:\n%s' % (sender_nickname, text))
-    print('')
-    print('Replied:\n%s' % msg_reply)
-    print('')
-    return msg_reply
+        return
 
 @itchat.msg_register(TEXT, isGroupChat = True)
 def text_reply(msg):
