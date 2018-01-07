@@ -18,19 +18,7 @@ class Robot:
                 'info': text,
         }
 
-        r = requests.post(api_url, data = data).json()
-        r['text'] = r['text'].replace('图灵工程师妈妈', '冬雪腊梅')
-        r['text'] = r['text'].replace('图灵工程师爸爸', '绿水青山')
-        code = r['code']
-        content = r['text']
-        # News and Recipe, delete the '?' followed sub-string
-        if str(code) == '302000' or str(code) == '308000':
-            content += '\n'
-            for item in r['list']:
-                content += '\n'
-                for key in item:
-                    if key != 'icon':
-                        # delete the reference
-                        url = item[key].split('?')
-                        content += url[0] + '\n'
-        return code, content
+        result = requests.post(api_url, data = data).json()
+        result['text'] = result['text'].replace('图灵工程师妈妈', '冬雪腊梅')
+        result['text'] = result['text'].replace('图灵工程师爸爸', '绿水青山')
+        return result

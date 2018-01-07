@@ -16,6 +16,7 @@ class BaiduTranslator:
         return
 
     def translate(self, q, fromLang='auto', toLang='en'):
+        q = q.replace('\n', '~~~~~')
         self.fromLang = fromLang
         self.toLang = toLang
         myurl = '/api/trans/vip/translate'
@@ -37,6 +38,7 @@ class BaiduTranslator:
             #response is an HTTPResponse object
             response = httpClient.getresponse()
             result = eval(response.read())
+            result['trans_result'][0]['dst'] = result['trans_result'][0]['dst'].replace('~~~~~', '\n')
         except Exception as e:
             print(e)
         finally:
