@@ -83,7 +83,6 @@ def main():
     itchat.auto_login(hotReload = True)    # hotReload=True: Keep the login state after the program quits
 
     wx = WeixinInfo()
-#    official_account = wx.search_OfficialAccount(u'方脑壳被驴踢')
 
     # Listening
     itchat.run()

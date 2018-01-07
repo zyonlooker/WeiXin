@@ -1,3 +1,4 @@
+#coding=utf-8
 import time, datetime, requests, itchat
 from itchat.content import *
 
@@ -13,6 +14,9 @@ class WeixinInfo():
         print('-------------------')
         print('UserName:    %s' % self.myself['UserName'])
         print('NickName:    %s' % self.myself['NickName'])
+        gender = {'1': 'Male', '2': 'Female', '0': 'Unknown'}
+        print('Gender:      %s' % gender[str(self.myself['Sex'])])
+        print('City:        %s, %s' % (self.myself['Province'], self.myself['City']))
         print('Signature:   %s' % self.myself['Signature'])
         print('-------------------')
 

@@ -47,7 +47,6 @@ def send_video(video, UserName):
 
 # Translated Messages
 def text_translation(text):
-    #text = text.replace('\n', ';')
     translate = BaiduTranslate.BaiduTranslator()
     result = translate.translate(text, toLang='zh')
     msg_reply = ''
@@ -74,8 +73,7 @@ def rob_reply(text):
                     url = item[key].split('?')
                     text_rob_replied += url[0] + '\n'
     else:
-        text_rob_replied = ''
-        text_rob_replied += result['text']
+        text_rob_replied = result['text']
         if 'url' in result.keys():
             text_rob_replied += '\n'
             text_rob_replied += result['url']
@@ -83,6 +81,6 @@ def rob_reply(text):
                 msg_reply = u'YAO之助:\n'
                 msg_reply += text_rob_replied
     else:
-        msg_reply = u'YAO之助:\n我累了，等YAO回来自己和你说.....'
+        msg_reply = u'YAO之助:\n我累了，等YAO回来自己和你说......'
     return msg_reply
 
