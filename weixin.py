@@ -31,7 +31,9 @@ def text_reply(msg):
     # ACL. Senders in the list will not be replied.
     acl = open('acl.cfg', 'r').read().split('\n')
     if sender_nickname in acl or sender_remarkname in acl:
-        if sender_remarkname != '':
+        if sender_name == wx.myself['UserName']:
+            return
+        elif sender_remarkname != '':
             print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
         else:
             print('Message from %s:\n%s' % (sender_nickname, text))
@@ -40,7 +42,9 @@ def text_reply(msg):
         print('')
         return 
 
-    if sender_name != wx.myself['UserName']:
+    if sender_name == wx.myself['UserName']:
+        return
+    else:
         if str(MsgType) == '1':
             if chinese_detect(text):
                 msg_replied = rob_reply(text)
@@ -64,8 +68,6 @@ def text_reply(msg):
             print('Replied:\n%s' % msg_replied)
             print('')
             return msg_replied
-    else:
-        return
 
 @itchat.msg_register(TEXT, isGroupChat = True)
 def text_reply(msg):
