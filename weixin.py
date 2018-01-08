@@ -30,7 +30,7 @@ def text_reply(msg):
             
     # ACL. Senders in the list will not be replied.
     acl = open('acl.cfg', 'r').read().split('\n')
-    if sender_nickname in acl:
+    if sender_nickname in acl or sender_remarkname in acl:
         if sender_remarkname != '':
             print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
         else:
