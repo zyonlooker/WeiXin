@@ -30,7 +30,7 @@ def text_reply(msg):
             
     # ACL. Senders in the list will not be replied.
     acl = open('acl.cfg', 'r').read().split('\n')
-    if sender_nickname in acl or sender_remarkname in acl:
+    if sender_nickname in acl or (sender_remarkname and sender_remarkname in acl):
         if sender_name == wx.myself['UserName']:
             return
         elif sender_remarkname != '':
@@ -59,7 +59,7 @@ def text_reply(msg):
             print('')
             return msg_replied
         else:
-            msg_replied = 'Message received, Yao will handle it when he comes back!'
+            msg_replied = 'Message received, YAO will handle it when he comes back!'
             if sender_remarkname != '':
                 print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
             else:

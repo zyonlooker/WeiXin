@@ -9,7 +9,9 @@ def chinese_detect(text):
     zh = 0
     other = 0
     for char in text:
-        if char >= '\u4e00' and char <= '\u9fff':
+        # include general symbols and digits that from 0020 to 0040
+        if (char >= '\u4e00' and char <= '\u9fff') \
+                or (char >= '\u0020' and char <= '\u0040'):
             zh += 1
         else:
             other += 1
