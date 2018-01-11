@@ -69,6 +69,8 @@ def text_reply(msg):
             if sender_remarkname:
                 s = sender_remarkname
                 os.system('sed -i \'/%s/d\' %s' % (s, f))
+                s = sender_nickname
+                os.system('sed -i \'/%s/d\' %s' % (s, f))
             else:
                 s = sender_nickname
                 os.system('sed -i \'/%s/d\' %s' % (s, f))
