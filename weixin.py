@@ -1,6 +1,6 @@
 #coding=utf-8
 
-import time, datetime, requests, itchat
+import os, time, datetime, requests, itchat
 from utils import *
 from BasicInfo import WeixinInfo
 
@@ -8,6 +8,7 @@ from BasicInfo import WeixinInfo
 
 @itchat.msg_register([TEXT, MAP, CARD, NOTE, SHARING, PICTURE, RECORDING, ATTACHMENT, VIDEO], isMpChat = True, isFriendChat = True)
 def text_reply(msg):
+    # Get the information of received messages
     MsgType = msg['MsgType']
     text = msg['Content']
     sender_name = msg['FromUserName']
@@ -27,7 +28,59 @@ def text_reply(msg):
                 sender_nickname = sender['NickName']
                 sender_remarkname = sender['RemarkName']
                 break
-            
+
+    # Switch on-off for auto-reply control.
+    # Off
+    if text == u'闭嘴':
+        not_in_acl = None
+        with open('acl.cfg', 'r') as f:
+            for line in f:
+                if sender_nickname == line.strip('\n') \
+                    or \
+                (sender_remarkname and sender_remarkname == line.strip('\n')):
+                    break
+            else:
+                not_in_acl = True
+        if not_in_acl:
+            with open('acl.cfg', 'a') as f:
+                f.write(sender_nickname)
+                if sender_remarkname:
+                    f.write(sender_remarkname)
+                f.write('\n')
+                prompt = 'YAO之助:\n好，我走了。呼唤"YAO之助"我就回来了～'
+                if sender_remarkname != '':
+                    print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
+                else:
+                    print('Message from %s:\n%s' % (sender_nickname, text))
+                print('')
+                print(prompt + '\n')
+                return prompt
+    # On                
+    if text == u'YAO之助':
+        in_acl = None
+        with open('acl.cfg', 'r') as f:
+            for line in f:
+                if sender_nickname == line.strip('\n') \
+                    or \
+                (sender_remarkname and sender_remarkname == line.strip('\n')):
+                    in_acl = True
+        if in_acl:
+            f = 'acl.cfg'
+            if sender_remarkname:
+                s = sender_remarkname
+                os.system('sed -i \'/%s/d\' %s' % (s, f))
+            else:
+                s = sender_nickname
+                os.system('sed -i \'/%s/d\' %s' % (s, f))
+            prompt = 'YAO之助:\n我回来了～'
+            if sender_remarkname != '':
+                print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
+            else:
+                print('Message from %s:\n%s' % (sender_nickname, text))
+            print('')
+            print(prompt + '\n')
+            return prompt
+           
     # ACL. Senders in the list will not be replied.
     acl = open('acl.cfg', 'r').read().split('\n')
     if sender_nickname in acl or (sender_remarkname and sender_remarkname in acl):
@@ -42,6 +95,7 @@ def text_reply(msg):
         print('')
         return 
 
+    # Auto reply if the message was not from myself
     if sender_name == wx.myself['UserName']:
         return
     else:
