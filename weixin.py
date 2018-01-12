@@ -44,6 +44,7 @@ def text_reply(msg):
         if not_in_acl:
             with open('acl.cfg', 'a') as f:
                 f.write(sender_nickname)
+                f.write('\n')
                 if sender_remarkname:
                     f.write(sender_remarkname)
                 f.write('\n')
