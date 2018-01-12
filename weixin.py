@@ -105,6 +105,7 @@ def text_reply(msg):
         if str(MsgType) == '1':
             if chinese_detect(text):
                 msg_replied = rob_reply(text)
+                msg_replied += '\n（你可以让我闭嘴～）'
             else:
                 msg_replied = text_translation(text)
             if sender_remarkname != '':
