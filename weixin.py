@@ -132,7 +132,7 @@ def text_reply(msg):
     if msg['isAt']:
         text = msg['Content']
         if chinese_detect(text):
-            msg_replied = text_rob_reply(text)
+            msg_replied = rob_reply(text)
         else:
             msg_replied = text_translation(text)
         itchat.send(msg_reply)
