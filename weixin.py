@@ -135,7 +135,7 @@ def text_reply(msg):
             msg_replied = rob_reply(text)
         else:
             msg_replied = text_translation(text)
-        itchat.send(msg_reply)
+        itchat.send(msg_replied)
 
 def main():
     global wx
