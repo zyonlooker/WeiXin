@@ -2,6 +2,7 @@
 import datetime, itchat
 from itchat.content import *
 import BaiduTranslate
+import BaiduAudio
 import TulingRob
 
 # Chinese Detect
@@ -86,3 +87,18 @@ def rob_reply(text):
         msg_reply = u'YAO之助:\n我累了，等YAO回来自己和你说......'
     return msg_reply
 
+# Audio Reply
+def audio_to_text(audio_file):
+    audio = BaiduAudio.Audio()
+    result = audio.speech_recognise(audio_file)
+    if result['err_no'] != 0:
+        text = 'YAO\'s Assistant:\nPardon? I couldn\'t hear clearly. I\'m sorry!'
+        msg_reply = text + '\n'
+    else:
+        text = result['result'][0].strip('，')
+        msg_reply = ''
+        msg_reply += 'Audio received. I guess you mean:\n'
+        msg_reply += '----------------------\n'
+        msg_reply += text + '\n'
+        msg_reply += '----------------------\n'
+    return msg_reply

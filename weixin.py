@@ -6,7 +6,7 @@ from BasicInfo import WeixinInfo
 
 # Receiving Messages and Replying
 
-@itchat.msg_register([TEXT, MAP, CARD, NOTE, SHARING, PICTURE, RECORDING, ATTACHMENT, VIDEO], isMpChat = True, isFriendChat = True)
+@itchat.msg_register([TEXT, MAP, CARD, NOTE, SHARING, PICTURE, ATTACHMENT, VIDEO], isMpChat = True, isFriendChat = True)
 def text_reply(msg):
     # Get the information of received messages
     MsgType = msg['MsgType']
@@ -50,8 +50,10 @@ def text_reply(msg):
                 f.write('\n')
                 prompt = 'YAO之助:\n好，我走了。呼唤"YAO之助"我就回来了～'
                 if sender_remarkname != '':
+                    print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
                     print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
                 else:
+                    print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
                     print('Message from %s:\n%s' % (sender_nickname, text))
                 print('')
                 print(prompt + '\n')
@@ -77,8 +79,10 @@ def text_reply(msg):
                 os.system('sed -i \'/%s/d\' %s' % (s, f))
             prompt = 'YAO之助:\n我回来了～'
             if sender_remarkname != '':
+                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
                 print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
             else:
+                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
                 print('Message from %s:\n%s' % (sender_nickname, text))
             print('')
             print(prompt + '\n')
@@ -90,8 +94,10 @@ def text_reply(msg):
         if sender_name == wx.myself['UserName']:
             return
         elif sender_remarkname != '':
+            print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
             print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
         else:
+            print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
             print('Message from %s:\n%s' % (sender_nickname, text))
         print('')
         print('Replied: No Reply')
@@ -109,8 +115,10 @@ def text_reply(msg):
             else:
                 msg_replied = text_translation(text)
             if sender_remarkname != '':
+                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
                 print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
             else:
+                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
                 print('Message from %s:\n%s' % (sender_nickname, text))
             print('')
             print('Replied:\n%s' % msg_replied)
@@ -119,8 +127,10 @@ def text_reply(msg):
         else:
             msg_replied = 'Message received, YAO will handle it when he comes back!'
             if sender_remarkname != '':
+                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
                 print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
             else:
+                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
                 print('Message from %s:\n%s' % (sender_nickname, text))
             print('')
             print('Replied:\n%s' % msg_replied)
@@ -136,6 +146,51 @@ def text_reply(msg):
         else:
             msg_replied = text_translation(text)
         itchat.send(msg_replied)
+
+
+# Audio Messages reply
+
+@itchat.msg_register([RECORDING], isMpChat = True, isFriendChat = True)
+def audio_reply(msg):
+    # Get the information of the received audio
+    text = msg['Content']
+    sender_name = msg['FromUserName']
+    friends = wx.get_friends()
+    sender_nickname = None
+    sender_remarkname = None
+    for sender in friends:
+        if sender['UserName'] == sender_name:
+            sender_nickname = sender['NickName']
+            sender_remarkname = sender['RemarkName']
+            break
+    else:
+        official_accounts = wx.get_official_accounts()
+        for sender in official_accounts:
+            if sender['UserName'] == sender_name:
+                sender_nickname = sender['NickName']
+                sender_remarkname = sender['RemarkName']
+                break
+    # Download the audio
+    msg['Text']('audio/%s' % msg.fileName)
+    current_path = os.path.abspath('.')
+    audio_file_s = current_path + '/audio/' + msg.fileName
+    audio_file_d = current_path + '/audio/'\
+                + os.path.split(audio_file_s)[1].split('.')[0]\
+                + '.pcm'
+    os.system('ffmpeg -y -i %s -acodec pcm_s16le -f s16le -ac 1 -ar 16000 %s > /dev/null 2>&1' % (audio_file_s, audio_file_d))
+    msg_replied = audio_to_text(audio_file_d)
+    os.system('rm -f %s %s' % (audio_file_s, audio_file_d))
+    if sender_remarkname != '':
+        print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
+        print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
+    else:
+        print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
+        print('Message from %s:\n%s' % (sender_nickname, text))
+        print('')
+        print('Replied:\n%s' % msg_replied)
+        print('')
+    return msg_replied
+
 
 def main():
     global wx

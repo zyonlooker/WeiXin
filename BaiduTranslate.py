@@ -21,8 +21,8 @@ class BaiduTranslator:
         self.toLang = toLang
         myurl = '/api/trans/vip/translate'
         baidu = eval(open('baidu_api.key', 'r').read().strip('\n'))
-        app_id = baidu['app_id']
-        key = baidu['key']
+        app_id = baidu['Translate']['app_id']
+        key = baidu['Translate']['key']
         salt = random.randint(32768, 65536)
         sign = app_id + q + str(salt) + key
         m1 = hashlib.md5()
