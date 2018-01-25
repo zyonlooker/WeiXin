@@ -12,7 +12,7 @@ def chinese_detect(text):
     for char in text:
         # include general symbols and digits that from 0020 to 0040
         if (char >= '\u4e00' and char <= '\u9fff') \
-                or (char >= '\u0020' and char <= '\u0040'):
+                or (char > '\u0020' and char <= '\u0040'):
             zh += 1
         else:
             other += 1
@@ -55,9 +55,9 @@ def text_translation(text):
     msg_reply = ''
     msg_reply += 'YAO is not here.\nNLP is under Construction...\n'
     msg_reply += 'Did you mean:\n'
-    msg_reply += '----------------------\n'
+    msg_reply += '------------------------------------------\n'
     msg_reply += result['trans_result'][0]['dst']
-    msg_reply += '\n----------------------\n'
+    msg_reply += '\n------------------------------------------\n'
     return msg_reply
 
 # Tuling Robot Reply
@@ -97,8 +97,8 @@ def audio_to_text(audio_file):
     else:
         text = result['result'][0].strip('，')
         msg_reply = ''
-        msg_reply += 'Audio received. I guess you mean:\n'
-        msg_reply += '----------------------\n'
-        msg_reply += text + '\n'
-        msg_reply += '----------------------\n'
+        msg_reply += u'YAO之助收到！你可能说的是：\n'
+        msg_reply += '------------------------------------------\n'
+        msg_reply += text
+        msg_reply += '\n------------------------------------------\n'
     return msg_reply

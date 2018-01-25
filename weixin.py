@@ -4,6 +4,17 @@ import os, time, datetime, requests, itchat
 from utils import *
 from BasicInfo import WeixinInfo
 
+# Display the message on the screen
+def display_message(text, sender_remarkname, sender_nickname):
+    if sender_remarkname != '':
+        print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
+        print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
+    else:
+        print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
+        print('Message from %s:\n%s' % (sender_nickname, text))
+    print('')
+    return
+
 # Receiving Messages and Replying
 
 @itchat.msg_register([TEXT, MAP, CARD, NOTE, SHARING, PICTURE, ATTACHMENT, VIDEO], isMpChat = True, isFriendChat = True)
@@ -49,13 +60,7 @@ def text_reply(msg):
                     f.write(sender_remarkname)
                 f.write('\n')
                 prompt = 'YAO之助:\n好，我走了。呼唤"YAO之助"我就回来了～'
-                if sender_remarkname != '':
-                    print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-                    print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
-                else:
-                    print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-                    print('Message from %s:\n%s' % (sender_nickname, text))
-                print('')
+                display_message(text, sender_remarkname, sender_nickname)
                 print(prompt + '\n')
                 return prompt
     # On                
@@ -78,13 +83,7 @@ def text_reply(msg):
                 s = sender_nickname
                 os.system('sed -i \'/%s/d\' %s' % (s, f))
             prompt = 'YAO之助:\n我回来了～'
-            if sender_remarkname != '':
-                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-                print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
-            else:
-                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-                print('Message from %s:\n%s' % (sender_nickname, text))
-            print('')
+            display_message(text, sender_remarkname, sender_nickname)
             print(prompt + '\n')
             return prompt
            
@@ -93,13 +92,9 @@ def text_reply(msg):
     if sender_nickname in acl or (sender_remarkname and sender_remarkname in acl):
         if sender_name == wx.myself['UserName']:
             return
-        elif sender_remarkname != '':
-            print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-            print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
+        #elif sender_remarkname != '':
         else:
-            print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-            print('Message from %s:\n%s' % (sender_nickname, text))
-        print('')
+            display_message(text, sender_remarkname, sender_nickname)
         print('Replied: No Reply')
         print('')
         return 
@@ -114,25 +109,13 @@ def text_reply(msg):
                 msg_replied += '\n（你可以让我闭嘴～）'
             else:
                 msg_replied = text_translation(text)
-            if sender_remarkname != '':
-                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-                print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
-            else:
-                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-                print('Message from %s:\n%s' % (sender_nickname, text))
-            print('')
+            display_message(text, sender_remarkname, sender_nickname)
             print('Replied:\n%s' % msg_replied)
             print('')
             return msg_replied
         else:
             msg_replied = 'Message received, YAO will handle it when he comes back!'
-            if sender_remarkname != '':
-                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-                print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
-            else:
-                print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-                print('Message from %s:\n%s' % (sender_nickname, text))
-            print('')
+            display_message(text, sender_remarkname, sender_nickname)
             print('Replied:\n%s' % msg_replied)
             print('')
             return msg_replied
@@ -180,15 +163,9 @@ def audio_reply(msg):
     os.system('ffmpeg -y -i %s -acodec pcm_s16le -f s16le -ac 1 -ar 16000 %s > /dev/null 2>&1' % (audio_file_s, audio_file_d))
     msg_replied = audio_to_text(audio_file_d)
     os.system('rm -f %s %s' % (audio_file_s, audio_file_d))
-    if sender_remarkname != '':
-        print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-        print('Message from %s(%s):\n%s' % (sender_nickname, sender_remarkname, text))
-    else:
-        print('{:%Y-%b-%d %H:%M:%S}'.format(datetime.datetime.now()))
-        print('Message from %s:\n%s' % (sender_nickname, text))
-        print('')
-        print('Replied:\n%s' % msg_replied)
-        print('')
+    display_message(text, sender_remarkname, sender_nickname)
+    print('Replied:\n%s' % msg_replied)
+    print('')
     return msg_replied
 
 
