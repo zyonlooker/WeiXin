@@ -23,6 +23,7 @@ def text_reply(msg):
     MsgType = msg['MsgType']
     text = msg['Content']
     sender_name = msg['FromUserName']
+    receiver_name = msg['ToUserName']
 
     friends = wx.get_friends()
     sender_nickname = u'微信团队'
@@ -101,7 +102,8 @@ def text_reply(msg):
     # Auto reply if the message was not from myself
     # Store the image from mobile
     if sender_name == wx.myself['UserName']:
-        if str(MsgType) == '3':     # Picture
+        if str(MsgType) == '3' and\
+            receiver_name == sender_name: # Picture send to myself
             msg['Text']('image/%s' % msg.fileName)
             display_message('Image', '', 'YAO')
             print('Image has been downloaded.')
