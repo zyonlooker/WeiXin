@@ -25,8 +25,8 @@ def text_reply(msg):
     sender_name = msg['FromUserName']
 
     friends = wx.get_friends()
-    sender_nickname = None
-    sender_remarkname = None
+    sender_nickname = u'微信团队'
+    sender_remarkname = u'微信团队'
     for sender in friends:
         if sender['UserName'] == sender_name:
             sender_nickname = sender['NickName']
@@ -92,7 +92,6 @@ def text_reply(msg):
     if sender_nickname in acl or (sender_remarkname and sender_remarkname in acl):
         if sender_name == wx.myself['UserName']:
             return
-        #elif sender_remarkname != '':
         else:
             display_message(text, sender_remarkname, sender_nickname)
         print('Replied: No Reply')
@@ -100,7 +99,13 @@ def text_reply(msg):
         return 
 
     # Auto reply if the message was not from myself
+    # Store the image from mobile
     if sender_name == wx.myself['UserName']:
+        if str(MsgType) == '3':     # Picture
+            msg['Text']('image/%s' % msg.fileName)
+            display_message('Image', '', 'YAO')
+            print('Image has been downloaded.')
+            print('')
         return
     else:
         if str(MsgType) == '1':
