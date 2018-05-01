@@ -26,8 +26,12 @@ def text_reply(msg):
     receiver_name = msg['ToUserName']
 
     friends = wx.get_friends()
-    sender_nickname = u'微信团队'
-    sender_remarkname = u'微信团队'
+    if sender_name == 'weixin':
+        sender_nickname = u'微信团队'
+        sender_remarkname = u'微信团队'
+    else:
+        sender_nickname = None
+        sender_remarkname = None
     for sender in friends:
         if sender['UserName'] == sender_name:
             sender_nickname = sender['NickName']
@@ -40,6 +44,15 @@ def text_reply(msg):
                 sender_nickname = sender['NickName']
                 sender_remarkname = sender['RemarkName']
                 break
+
+    # Auto reply
+    # Temporary content to reply
+    if temp == 1:
+        msg_replied = temporary()
+        display_message(text, sender_remarkname, sender_nickname)
+        print('Replied:\n%s' % msg_replied)
+        print('')
+        return msg_replied
 
     # Switch on-off for auto-reply control.
     # Off
@@ -99,7 +112,6 @@ def text_reply(msg):
         print('')
         return 
 
-    # Auto reply if the message was not from myself
     # Store the image from mobile
     if sender_name == wx.myself['UserName']:
         if str(MsgType) == '3' and\
@@ -108,7 +120,8 @@ def text_reply(msg):
             display_message('Image', '', 'YAO')
             print('Image has been downloaded.')
             print('')
-        return
+        return 'Picture saved.'
+    # Auto reply if the message was not from myself
     else:
         if str(MsgType) == '1':
             if chinese_detect(text):
@@ -127,6 +140,7 @@ def text_reply(msg):
             print('')
             return msg_replied
 
+'''
 @itchat.msg_register(TEXT, isGroupChat = True)
 def text_reply(msg):
     if msg['isAt']:
@@ -136,7 +150,7 @@ def text_reply(msg):
         else:
             msg_replied = text_translation(text)
         itchat.send(msg_replied)
-
+'''
 
 # Audio Messages reply
 
@@ -160,6 +174,15 @@ def audio_reply(msg):
                 sender_nickname = sender['NickName']
                 sender_remarkname = sender['RemarkName']
                 break
+
+    # Temporary content to reply
+    if temp == 1:
+        msg_replied = temporary()
+        display_message(text, sender_remarkname, sender_nickname)
+        print('Replied:\n%s' % msg_replied)
+        print('')
+        return msg_replied
+
     # Download the audio
     msg['Text']('audio/%s' % msg.fileName)
     current_path = os.path.abspath('.')
@@ -178,6 +201,8 @@ def audio_reply(msg):
 
 def main():
     global wx
+    global temp
+    temp = 0 # go to '# Temporary content to reply' to check the utilities.
     # Log in via QR code
     itchat.auto_login(hotReload = True)    # hotReload=True: Keep the login state after the program quits
 

@@ -48,6 +48,14 @@ def send_video(video, UserName):
 
 # Message Reply
 
+# Temporary Reply
+def temporary():
+    #message = u'YAO在户外旅行，一切消息等他回来回复。\nYAO is traveling. You will be replied when YAO comes back.'
+    message = 'test message'
+    msg_reply = u'YAO之助:\n'
+    msg_reply += message
+    return msg_reply
+
 # Translated Messages
 def text_translation(text):
     translate = BaiduTranslate.BaiduTranslator()
@@ -55,9 +63,9 @@ def text_translation(text):
     msg_reply = ''
     msg_reply += 'YAO is not here.\nNLP is under Construction...\n'
     msg_reply += 'Did you mean:\n'
-    msg_reply += '------------------------------------------\n'
+    msg_reply += '--------------------------\n'
     msg_reply += result['trans_result'][0]['dst']
-    msg_reply += '\n------------------------------------------\n'
+    msg_reply += '\n--------------------------\n'
     return msg_reply
 
 # Tuling Robot Reply
@@ -98,7 +106,7 @@ def audio_to_text(audio_file):
         text = result['result'][0].strip('，')
         msg_reply = ''
         msg_reply += u'YAO之助收到！你可能说的是：\n'
-        msg_reply += '------------------------------------------\n'
+        msg_reply += '--------------------------\n'
         msg_reply += text
-        msg_reply += '\n------------------------------------------\n'
+        msg_reply += '\n--------------------------\n'
     return msg_reply
