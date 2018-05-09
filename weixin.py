@@ -120,7 +120,9 @@ def text_reply(msg):
             display_message('Image', '', 'YAO')
             print('Image has been downloaded.')
             print('')
-        return 'Picture saved.'
+            return 'Picture saved.'
+        else:
+            return
     # Auto reply if the message was not from myself
     else:
         if str(MsgType) == '1':
