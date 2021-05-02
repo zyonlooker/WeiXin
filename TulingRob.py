@@ -19,6 +19,5 @@ class Robot:
         }
 
         result = requests.post(api_url, data = data).json()
-        result['text'] = result['text'].replace('图灵工程师妈妈', '冬雪腊梅')
-        result['text'] = result['text'].replace('图灵工程师爸爸', '绿水青山')
+
         return result
